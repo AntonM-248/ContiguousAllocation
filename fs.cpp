@@ -2,23 +2,58 @@
 
 class disc_em{
   public:
-    disc_em(string fname){
-      string temp_str;
-      fileName = fname;
-      ifstream read(fileName);
-      while(getline(read, temp_str)){
-        disc += temp_str;
-      }
-      read.close();
-      path.push(0);
-      if(disc == ""){
-        for(int i = 0; i < 1500; i++){
-          disc += '@';
-        }
-      }
-    }
+    disc_em(string fname);
+    //creates disc.txt if it doesn't exist. Otherwise loads text into disc string
+    string append(string fName, string text);
+    //adds to an existing file if there is enough space
+    //usage: append fileName textToAppend
+    string touch(string fname, int num);
+    //allocates given number of blocks for a file
+    //usage:touch fileName #blocks
+    string mkdir(string fname);
+    //creates a directory
+    string ls();
+    //displays items in current directory
+    string cd(string dName);
+    //switches to given directory. Does no accept a list of directories
+    //usage: cd directoryName
+    //you can't do cd d1/d2/d3
+    string vi(string fName, string text);
+    //replaces text of a file with text given to the command
+    //old text is lost
+    //usage: vi fileName newText
+    void print();
+    //prints the disc
+    ~disc_em();
+    //writes all changes to disc.txt
+  private:
+    string disc;
+    string fileName;
+    int headPtr = 0;
+    stack<int> path;
+    vector<int> fOS = {300, 80, 20, 8};
+    vector<int> nFat = {1200, 220, 30, 12};
+};
 
-    string append(string fName, string text){
+
+
+disc_em::disc_em(string fname){
+  string temp_str;
+  fileName = fname;
+  ifstream read(fileName);
+  while(getline(read, temp_str)){
+    disc += temp_str;
+  }
+  read.close();
+  path.push(0);
+  if(disc == ""){
+    for(int i = 0; i < 1500; i++){
+      disc += '@';
+    }
+  }
+}
+
+string disc_em:: append(string fName, string text){
       for(int i = headPtr; i < (headPtr + fOS[path.size() - 1]); i++){
         if(disc[i] == '^'){
           if(disc.substr(i+1, fName.length()) == fName){
@@ -64,7 +99,7 @@ class disc_em{
       return "File not found.\n";  
     }
 
-    string touch(string fname, int num){
+    string disc_em:: touch(string fname, int num){
       string text = "";
       for(int i = 0; i < num; i++){
         text += "@@";
@@ -127,7 +162,7 @@ class disc_em{
       }
     }
 
-    string mkdir(string fname){
+string disc_em:: mkdir(string fname){
       if(path.size() >= 4){
         return "Mkdir no longer possible.\n";
       }
@@ -185,7 +220,7 @@ class disc_em{
       }
     }
 
-    string ls(){
+string disc_em:: ls(){
       string result = "";
       vector<string> items;
       for(int i = headPtr; i < (headPtr + fOS[path.size() - 1]); i++){
@@ -215,7 +250,7 @@ class disc_em{
       return result + "\n";
     }
 
-    string cd(string dName){
+string disc_em:: cd(string dName){
       if(dName == ".."){
         if(path.size() == 1){
           return "You are in root. You cannot go back anymore.\n";
@@ -250,7 +285,7 @@ class disc_em{
       }
     }
 
-    string vi(string fName, string text){
+string disc_em:: vi(string fName, string text){
       for(int i = headPtr; i < (headPtr + fOS[path.size() - 1]); i++){
         if(disc[i] == '^'){
           if(disc.substr(i+1, fName.length()) == fName){
@@ -295,30 +330,20 @@ class disc_em{
       return "File not found.\n";
     }
 
-    void print(){
+void disc_em:: print(){
       for(int i = 0; i < disc.length(); i += 150){
         cout<<disc.substr(i, 150)<<endl;
       }
       cout<<endl;
     }
 
-    ~disc_em(){
+disc_em::~disc_em(){
       ofstream write(fileName);
       for(int i = 0; i < disc.size(); i += 150){
         write<<disc.substr(i, 150)<<endl;
       }
       write.close();
     }
-
-  private:
-    string disc;
-    string fileName;
-    int headPtr = 0;
-    stack<int> path;
-    vector<int> fOS = {300, 80, 20, 8};
-    vector<int> nFat = {1200, 220, 30, 12};
-};
-
 
 int main(){
   string command;

@@ -70,10 +70,11 @@ void help(){
   cout<<"Please do not use the following characters: ^ & | * @\n";
   cout<<"also please do not put whitespace or numbers in file or directory names\n";
   cout<<"usage:\n";
-  cout<<"touch filename filetext\n";
+  cout<<"touch filename numblocks\n";
   cout<<"mkdir filename\n";
   cout<<"cd directoryname\n";
   cout<<"vi filename newfiletext\n";
+  cout<<"append filename textToAppend\n";
   cout<<"print      this will print the file contents to the screen\n";
   cout<<"input help to show this again\n";
 }
