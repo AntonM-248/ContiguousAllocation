@@ -429,9 +429,6 @@ int main(){
     else if(command == "print"){
       disc.print();
     }
-    else{
-      cout<<"Invalid command. Try again\n";
-    }
     cout<<endl;
   }
   // disc.mkdir("stuff");
